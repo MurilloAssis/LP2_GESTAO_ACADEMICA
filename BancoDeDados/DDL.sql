@@ -1,6 +1,4 @@
-SET default_storage_engine=InnoDB;
-
-CREATE DATABASE IF NOT EXISTS gestao_academica;
+CREATE DATABASE gestao_academica;
 USE gestao_academica;
 
 CREATE TABLE usuarios (
