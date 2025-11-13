@@ -30,4 +30,43 @@ public class Disciplina {
     @Column(name = "carga_horaria")
     private Integer cargaHoraria;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Curso getCurso() {
+        return curso;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCodigoDisciplina() {
+        return codigoDisciplina;
+    }
+
+    public void setCodigoDisciplina(String codigoDisciplina) {
+        this.codigoDisciplina = codigoDisciplina;
+    }
+
+    public Integer getCargaHoraria() {
+        return cargaHoraria;
+    }
+
+    public void setCargaHoraria(Integer cargaHoraria) {
+        this.cargaHoraria = cargaHoraria;
+    }
 }

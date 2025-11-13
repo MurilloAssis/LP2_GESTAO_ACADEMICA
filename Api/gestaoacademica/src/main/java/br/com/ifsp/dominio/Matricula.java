@@ -39,5 +39,51 @@ public class Matricula {
     @Column(nullable = false)
     private StatusMatricula status = StatusMatricula.CURSANDO;
 
-    // Getters e Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Aluno getAluno() {
+        return aluno;
+    }
+
+    public void setAluno(Aluno aluno) {
+        this.aluno = aluno;
+    }
+
+    public Turma getTurma() {
+        return turma;
+    }
+
+    public void setTurma(Turma turma) {
+        this.turma = turma;
+    }
+
+    public BigDecimal getMediaFinal() {
+        return mediaFinal;
+    }
+
+    public void setMediaFinal(BigDecimal mediaFinal) {
+        this.mediaFinal = mediaFinal;
+    }
+
+    public BigDecimal getFrequencia() {
+        return frequencia;
+    }
+
+    public void setFrequencia(BigDecimal frequencia) {
+        this.frequencia = frequencia;
+    }
+
+    public StatusMatricula getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusMatricula status) {
+        this.status = status;
+    }
 }

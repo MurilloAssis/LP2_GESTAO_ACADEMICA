@@ -1,55 +1,73 @@
 package br.com.ifsp.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    /**
-     * Define o Bean para criptografar senhas.
-     * Usamos o BCrypt, que é o padrão recomendado.
-     */
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthFilter;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Define a cadeia de filtros de segurança e as regras de autorização.
-     */
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Desabilita o CSRF (útil para APIs stateless)
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // Define as regras de autorização para os requests
                 .authorizeHttpRequests(authz -> authz
-                        // Permite acesso público ao endpoint raiz (seu HelloController)
                         .requestMatchers("/").permitAll()
-
-                        // --- REGRAS DE ACESSO (Exemplo inicial) ---
-                        // Aqui definimos o controle de permissão 
+                        .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/professor/**").hasRole("PROFESSOR")
                         .requestMatchers("/api/aluno/**").hasRole("ALUNO")
-
-                        // Qualquer outro request exige autenticação
                         .anyRequest().authenticated()
                 )
 
-                // Habilita a autenticação HTTP Basic (bom para testes iniciais via Postman)
-                .httpBasic(Customizer.withDefaults());
+                // 1. Definir a sessão como STATELESS (sem estado)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // 2. Adicionar o provedor de autenticação
+                .authenticationProvider(authenticationProvider())
+
+                // 3. Adicionar nosso filtro JWT antes do filtro padrão
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+}
 }
