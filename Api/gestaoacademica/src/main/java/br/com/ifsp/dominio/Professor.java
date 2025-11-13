@@ -26,7 +26,7 @@ public class Professor {
     private String nomeCompleto;
 
     @Column(unique = true)
-    private String siape;
+    private String matricula;
 
     private String departamento;
 
@@ -54,12 +54,12 @@ public class Professor {
         this.nomeCompleto = nomeCompleto;
     }
 
-    public String getSiape() {
-        return siape;
+    public String getMatricula() {
+        return matricula;
     }
 
-    public void setSiape(String siape) {
-        this.siape = siape;
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
     }
 
     public String getDepartamento() {
