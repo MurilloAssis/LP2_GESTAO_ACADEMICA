@@ -58,16 +58,12 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // 1. Definir a sessão como STATELESS (sem estado)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // 2. Adicionar o provedor de autenticação
                 .authenticationProvider(authenticationProvider())
 
-                // 3. Adicionar nosso filtro JWT antes do filtro padrão
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-}
 }
